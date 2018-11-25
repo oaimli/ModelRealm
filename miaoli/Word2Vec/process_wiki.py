@@ -12,8 +12,8 @@
 if __name__ == '__main__':
     # 抽取text
     # from gensim.corpora import WikiCorpus
-    # inp = "E:\word2vec\data\zhwiki\zhwiki-latest-pages-articles.xml.bz2"
-    # outp = "E:\word2vec\data\zhwiki\wiki.zn.text"
+    # inp = "E:\Word2Vec\data\zhwiki\zhwiki-latest-pages-articles.xml.bz2"
+    # outp = "E:\Word2Vec\data\zhwiki\wiki.zn.text"
     #
     # i = 0
     # output = open(outp, 'w', encoding="utf-8")
@@ -29,8 +29,8 @@ if __name__ == '__main__':
 
 
     # 简繁转换
-    # f_in = open("E:\word2vec\data\zhwiki\wiki.zn.text",encoding="utf-8")
-    # f_out = open("E:\word2vec\data\zhwiki\wiki.zn.s.text", "w", encoding="utf-8")
+    # f_in = open("E:\Word2Vec\data\zhwiki\wiki.zn.text",encoding="utf-8")
+    # f_out = open("E:\Word2Vec\data\zhwiki\wiki.zn.s.text", "w", encoding="utf-8")
     # from opencc import OpenCC
     # openCC = OpenCC('t2s')
     # tmp = []
@@ -45,8 +45,8 @@ if __name__ == '__main__':
 
 
     # # 分词
-    # f_in = open("E:\word2vec\data\zhwiki\wiki.zn.s.text", encoding="utf-8")
-    # f_out = open("E:\word2vec\data\zhwiki\wiki.zn.s.word.text", "w", encoding="utf-8")
+    # f_in = open("E:\Word2Vec\data\zhwiki\wiki.zn.s.text", encoding="utf-8")
+    # f_out = open("E:\Word2Vec\data\zhwiki\wiki.zn.s.word.text", "w", encoding="utf-8")
     # import jieba
     # lines = f_in.readlines()
     # print(len(lines) / 2)
@@ -67,7 +67,7 @@ if __name__ == '__main__':
 
 
     # # 分词后去掉空格，统计词数量
-    # f_in = open("E:\word2vec\data\zhwiki\wiki.zn.s.word.text", encoding="utf-8")
+    # f_in = open("E:\Word2Vec\data\zhwiki\wiki.zn.s.word.text", encoding="utf-8")
     # lines = f_in.readlines()
     # word_map = {}
     # for line in lines:
@@ -79,7 +79,7 @@ if __name__ == '__main__':
     #
     # print(len(word_map))
     #
-    # f_out = open("E:\word2vec\data\zhwiki\wiki.zn.s.entry.frequency.text", "w", encoding="utf-8")
+    # f_out = open("E:\Word2Vec\data\zhwiki\wiki.zn.s.entry.frequency.text", "w", encoding="utf-8")
     # items = []
     # x = 0
     # for item in word_map:
