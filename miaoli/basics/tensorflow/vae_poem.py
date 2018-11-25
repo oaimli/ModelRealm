@@ -24,7 +24,7 @@ n = 5 # 只抽取五言诗
 latent_dim = 64 # 隐变量维度
 hidden_dim = 64 # 隐层节点数
 
-s = codecs.open('shi.txt', encoding='utf-8').read()
+s = codecs.open('poems.txt', encoding='utf-8').read()
 
 # 通过正则表达式找出所有的五言诗
 s = re.findall(u'　　(.{%s}，.{%s}。.*?)\r\n'%(n,n), s)
