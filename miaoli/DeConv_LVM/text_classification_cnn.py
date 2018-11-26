@@ -7,11 +7,12 @@ from keras.layers import *
 from keras.models import Model
 from keras.optimizers import Adam
 from keras.callbacks import Callback
+
 import sys
 sys.path.append('../../')
 from miaoli.utils.load_data import load_data
 from miaoli.utils.get_embeddings import generate_batch_train_indexes_mem_cla, get_test_indexes_mem_cla
-from miaoli.nvtc.encoder_decoder import encoder_net_cnn
+from miaoli.DeConv_LVM.encoder_decoder import encoder_net_cnn, encoder_net_rnn
 
 
 dataset = "20ng"
@@ -29,20 +30,20 @@ embedding_layer = Embedding(len(embedding_matrix),
                             weights=[np.asarray(embedding_matrix)],
                             input_length=data_characteristics["words_dim"],
                             trainable=False)(inputs)
-h = encoder_net_cnn(embedding_layer, data_characteristics)
+h = encoder_net_rnn(embedding_layer, data_characteristics)# use cnn architecture in DeConv-LVM model
 
 
 predictions = Dense(data_characteristics["num_classes"], activation="softmax", kernel_initializer='random_normal', name="classification", kernel_regularizer="l2")(h)
 classifier = Model(inputs, predictions)
 classifier.summary()
 
-classifier_weights_dir = "weights/classification_onehot_20ng_weights.h5y"
+classifier_weights_dir = "weights/classification_20ng_weights.h5y"
 # if os.path.exists(classifier_weights_dir):
 #     classifier.load_weights(classifier_weights_dir)
 
 
 classifier.compile(loss="categorical_crossentropy",
-                   optimizer=Adam(lr=0.0001),
+                   optimizer=Adam(lr=0.001),
                    metrics=['accuracy'])
 
 class EpochCallback(Callback):

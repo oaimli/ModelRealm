@@ -27,13 +27,13 @@ sys.path.append('../../')
 from miaoli.utils.load_data import load_data
 from miaoli.utils.get_embeddings import generate_batch_train_indexes_mem_x, get_test_indexes_mem_vae
 from miaoli.utils.evaluation import plot_2d
-from miaoli.DeConv_LVM.encoder_decoder import encoder_net_cnn, decoder_net_cnn
+from miaoli.DeConv_LVM.encoder_decoder import encoder_net_cnn, decoder_net_cnn, encoder_net_rnn, decoder_net_rnn
 
 
 # parameters
 dataset = "20ng"
 batch_size = 32
-latent_dim = 300
+latent_dim = 50
 epochs = 1000
 
 
@@ -71,7 +71,7 @@ inputs_embeded = Embedding(len(embedding_matrix),
                             weights=[np.asarray(embedding_matrix)],
                             input_length=data_characteristics["words_dim"],
                             trainable=False)(inputs)
-h = encoder_net_cnn(inputs_embeded, data_characteristics)
+h = encoder_net_rnn(inputs_embeded, data_characteristics)
 z_mean = Dense(latent_dim, name='z_mean')(h)
 z_mean = Dropout(0.5)(z_mean)
 z_log_var = Dense(latent_dim, name='z_log_var')(h)
@@ -87,7 +87,7 @@ encoder.summary()
 
 # build decoder model
 latent_inputs = Input(shape=(latent_dim,), name='z_sampling')
-decoder_outputs = decoder_net_cnn(latent_inputs, data_characteristics)
+decoder_outputs = decoder_net_rnn(latent_inputs, data_characteristics)
 
 # instantiate decoder model
 decoder = Model(latent_inputs, decoder_outputs, name='decoder')
@@ -113,13 +113,13 @@ reconstruction_loss = 0.5 * K.categorical_crossentropy(inputs_onehot(inputs), ou
 kl_loss = 1 + z_log_var - K.square(z_mean) - K.exp(z_log_var)
 kl_loss = K.sum(kl_loss, axis=-1)
 kl_loss *= -0.5
-vae_loss = K.sum(reconstruction_loss, axis=-1) + kl_loss
+vae_loss = K.sum(reconstruction_loss, axis=-1) * 5 + kl_loss
 
 vae.add_loss(vae_loss)
 vae.compile(optimizer=Adam(lr=0.0001))
 vae.summary()
 
-vae_weights_dir = "weights/deconv_lvm_onehot_20ng_weights.h5y"
+vae_weights_dir = "weights/deconv_lvm_20ng_weights.h5y"
 
 
 class EpochCallback(Callback):
@@ -138,7 +138,7 @@ class EpochCallback(Callback):
             # print("x_decoded", np.argmax(decoder_re, -1))
 
             x_test_encoded_2d = PCA(n_components=2).fit_transform(x_test_encoded)
-            plot_2d(x_test_encoded_2d, Y_test, epoch)
+            plot_2d(x_test_encoded_2d, Y_test, epoch, "output/")
             y_test_pred = GaussianMixture(n_components=data_characteristics["num_classes"]).fit_predict(x_test_encoded)
             # y_train_pred = KMeans(n_clusters=data_characteristics["num_classes"], init='k-means++', max_iter=100, n_init=20,
             #     verbose=0).fit(x_train_encoded).labels_

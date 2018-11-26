@@ -40,7 +40,7 @@ def evaluate_clustering(y, y_pred):
     return ACC, ARI, AMI, VM
 
 
-def plot_2d(points, labels, epoch):
+def plot_2d(points, labels, epoch, location):
     """
 
     :param points: 2d points, x and y
@@ -51,7 +51,7 @@ def plot_2d(points, labels, epoch):
     import matplotlib.pyplot as plt
     plt.figure()
     plt.scatter(points[:, 0], points[:, 1], c=labels)
-    plt.savefig(str(epoch % 10) + ".png")
+    plt.savefig(location + str(epoch % 10) + ".png")
     plt.close()
 
 

@@ -9,8 +9,9 @@ from keras import backend as K
 
 def encoder_net_rnn(x, data_characteristics):
     inputs_reshape = Reshape((data_characteristics["words_dim"], data_characteristics["embedding_dim"]))(x)
-    h = Bidirectional(LSTM(1024, return_sequences=False, kernel_initializer="glorot_uniform"), merge_mode='concat')(
+    h = Bidirectional(LSTM(1024, return_sequences=True, kernel_initializer="glorot_uniform"), merge_mode='concat')(
         inputs_reshape)
+    h = Bidirectional(LSTM(1024, return_sequences=False, kernel_initializer="glorot_uniform"), merge_mode='concat')(h)
     return h
 
 
@@ -20,12 +21,14 @@ def encoder_net_cnn(x, data_characteristics):
     h = BatchNormalization()(h)
     h = Conv2D(filters=500, kernel_size=(3, data_characteristics["embedding_dim"]),
                kernel_initializer="glorot_uniform", strides=2)(h)
+    h = Dropout(0.5)(h)
     h = Activation("relu")(h)
 
     h = Reshape((K.int_shape(h)[1], K.int_shape(h)[3], 1))(h)
     h = BatchNormalization()(h)
-    h = Conv2D(filters=500, kernel_size=(3, K.int_shape(h)[2]),
+    h = Conv2D(filters=1000, kernel_size=(3, K.int_shape(h)[2]),
                kernel_initializer="glorot_uniform", strides=2)(h)
+    h = Dropout(0.5)(h)
     h = Activation("relu")(h)
 
     h = Reshape((K.int_shape(h)[1], K.int_shape(h)[3], 1))(h)
@@ -33,6 +36,7 @@ def encoder_net_cnn(x, data_characteristics):
     h = Conv2D(filters=600,
                kernel_size=(3, K.int_shape(h)[2]),
             kernel_initializer='glorot_uniform', strides=2)(h)
+    h = Dropout(0.5)(h)
     h = Activation("relu")(h)
 
     h = Reshape((K.int_shape(h)[1], K.int_shape(h)[3], 1))(h)
@@ -40,6 +44,7 @@ def encoder_net_cnn(x, data_characteristics):
     h = Conv2D(filters=500,
                kernel_size=(3, K.int_shape(h)[2]),
                kernel_initializer='glorot_uniform', strides=1)(h)
+    h = Dropout(0.5)(h)
     h = Activation("relu")(h)
 
     h = Flatten()(h)
@@ -48,16 +53,18 @@ def encoder_net_cnn(x, data_characteristics):
 
 
 def decoder_net_rnn(z, data_characteristics):
-    initial_state = Dense(1024)(z)
+    # initial_state = Dense(1024)(z)
     zs = RepeatVector(data_characteristics["words_dim"])(z)
-    outputs = LSTM(units=1024, return_sequences=True, dropout=0.5, recurrent_dropout=0.5,
+    outputs = LSTM(units=1024, return_sequences=True,
                    kernel_initializer="glorot_uniform")(zs)
+    outputs = LSTM(units=1024, return_sequences=True,
+                   kernel_initializer="glorot_uniform")(outputs)
     outputs = Concatenate()([outputs, zs])
-    h = TimeDistributed(Dense(data_characteristics["embedding_dim"], activation='relu'))(outputs)
 
-    h = Reshape((K.int_shape(h)[1], K.int_shape(h)[2]))(h)
-    x_recon = TimeDistributed(Dense(data_characteristics["vocabulary_dim"], activation='softmax'))(h)
 
+    x_recon = TimeDistributed(Dense(data_characteristics["vocabulary_dim"], activation='softmax'))(outputs)
+
+    # h = TimeDistributed(Dense(data_characteristics["embedding_dim"], activation='relu'))(outputs)
     # x_recon = Reshape((data_characteristics["words_dim"] * data_characteristics["embedding_dim"],))(outputs)
     return x_recon
 
