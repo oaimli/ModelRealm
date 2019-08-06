@@ -30,4 +30,5 @@ for i in range(3):
     _ = np.bincount(y_train_[y_train_pred == i])
     right += _.max()
 
+
 print('acc: %s' % (right / len(y_train_)))

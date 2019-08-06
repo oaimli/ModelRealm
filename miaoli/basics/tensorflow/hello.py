@@ -1,4 +1,4 @@
-#!/usr/bin/env basics 3.6.1
+#!/usr/bin/env Basics 3.6.1
 # -*- coding: utf-8 -*-
 # @Time    : 2018/5/11 13:41
 # @Author  : Miao Li
