@@ -1,1 +1,1 @@
-# Generative Text Modeling
+# Models for Generative Text Modeling
