@@ -1,2 +1,2 @@
 # Models4NLP
-Reproducing nice models published top-tier conferences, especially in Natural Language Processing.
+Reproducing nice models published top-tier conferences for Natural Language Processing.
